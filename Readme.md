@@ -72,6 +72,7 @@ http://<IP_OF_WATCH>:8080/screen.raw
  * add `-D RAW_SCREEN_SERVER` to your build flags in `platformio.ini``
  * build + flash + reset watch
  * wait for the server to be started (see msg above)
+ * run (Recommend) `bash createScreenshot.sh <IP_OF_WATCH> screenshot`
  * run `bash fetchScreen.sh <IP_OF_WATCH> screenshot.png`
  * run `bash composeScreen.sh screenshot.png screenshot_composed.png`
 
