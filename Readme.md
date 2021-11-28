@@ -38,6 +38,20 @@ pio run -e pico32_GPS_EDITION -t upload
 
 depending on the watch model.
 
+### Debugging (CLI)
+
+You can instead go to the repo folder with your terminal and debugging.  
+
+Check the port.
+```
+pio device list
+```
+Run the serial monitor.
+```
+pio device monitor -p /dev/tty-- -b BaudRate
+```
+In general, the baudrate is 115200.
+
 ## Creating Screen Shots of your Apps
 
 ![analog](./watchface_analog_osw.png)
