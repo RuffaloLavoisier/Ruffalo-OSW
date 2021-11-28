@@ -52,7 +52,7 @@ pio device monitor -p /dev/tty-- -b BaudRate
 ```
 In general, the baudrate is 115200.
 
-## Creating Screen Shots of your Apps
+## Creating ScreenShots of your Apps
 
 ![analog](./watchface_analog_osw.png)
 ![analog](./watchface_digital_osw.png)
