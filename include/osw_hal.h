@@ -3,9 +3,9 @@
 
 #include <Arduino.h>
 #include <Arduino_TFT.h>
-#include <gfx_2d_print.h>
-#include <Wire.h>
 #include <Preferences.h>
+#include <Wire.h>
+#include <gfx_2d_print.h>
 
 #include "Arduino_Canvas_Graphics2D.h"
 #include "hal/osw_filesystem.h"
@@ -88,7 +88,7 @@ class OswHal {
 
   /**
    * @brief Get the screen brightness from 0 to 255.
-   * 
+   *
    * @param bool checkHardware If true, we check the brightness on the hardware before return it.
    * @return uint8_t
    */
@@ -175,11 +175,12 @@ class OswHal {
   int getMagnetometerY(void);
   int getMagnetometerZ(void);
   void setMagnetometerCalibration(int x_min, int x_max, int y_min, int y_max, int z_min, int z_max);
-  float getTemperatureBME280(); // Environment sensor
+  float getTemperatureBME280();  // Environment sensor
 #endif
-  float getTemperature(); // Get the temperature either by the sensor of the GPS edition (BME280) or from the RTC module
-  float getTemperatureDS3231MZ(); // RTC clock
-  float getTemperatureBMA400(); // Accelerometer
+  float
+  getTemperature();  // Get the temperature either by the sensor of the GPS edition (BME280) or from the RTC module
+  float getTemperatureDS3231MZ();  // RTC clock
+  float getTemperatureBMA400();    // Accelerometer
 
   // Time
   void setUTCTime(long);
@@ -202,8 +203,8 @@ class OswHal {
  private:
   // Constructor
   OswHal(FileSystemHal* fs) : fileSystem(fs) {
-      //begin I2c communication
-      Wire.begin(SDA, SCL, 100000L);
+    // begin I2c communication
+    Wire.begin(SDA, SCL, 100000L);
   }
 
   static OswHal* instance;
@@ -234,7 +235,7 @@ class OswHal {
   float _pres = -100;
 #endif
 #ifdef OSW_FEATURE_STATS_STEPS
-  uint32_t _stepsCache[7] = {0};
+  uint32_t _stepsCache[7] = {0, };
   uint32_t _stepsSum = 0;
 #endif
 
