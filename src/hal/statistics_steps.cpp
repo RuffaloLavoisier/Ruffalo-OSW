@@ -10,15 +10,16 @@
 void OswHal::setupSteps() {
 #ifdef OSW_FEATURE_STATS_STEPS
   Preferences prefs;
-  prefs.begin(PREFS_STEPS, false);  // Open in RW, just in case
+  bool res = prefs.begin(PREFS_STEPS, false);  // Open in RW, just in case
+  assert(res);
   if (prefs.getBytes(PREFS_STEPS_STATS, &this->_stepsCache, sizeof(this->_stepsCache)) != sizeof(this->_stepsCache)) {
     // Uoh, the steps history is not initialized -> fill it with zero and do it now!
     for (size_t i = 0; i < 7; i++) this->_stepsCache[i] = 0;
-    prefs.putBytes(PREFS_STEPS_STATS, &this->_stepsCache, sizeof(this->_stepsCache));
-  } 
-  else 
-  {
-    prefs.getBytes(PREFS_STEPS_STATS, &this->_stepsCache, sizeof(this->_stepsCache));
+    res = prefs.putBytes(PREFS_STEPS_STATS, &this->_stepsCache, sizeof(this->_stepsCache)) == sizeof(this->_stepsCache);
+    assert(res);
+  } else {
+    res = prefs.getBytes(PREFS_STEPS_STATS, &this->_stepsCache, sizeof(this->_stepsCache)) == sizeof(this->_stepsCache);
+    assert(res);
   }
   this->_stepsSum = prefs.getUInt(PREFS_STEPS_ALL);
   uint32_t lastDoW = prefs.getUInt(PREFS_STEPS_DAYLASTCHECKED);
@@ -34,12 +35,9 @@ void OswHal::setupSteps() {
     if (currDoW > lastDoW) {
       // set stepscache to 0 in ]lastDoW, currDoW[
       for (uint32_t i = currDoW; lastDoW + 1 < i; i--) this->_stepsCache[i - 1] = 0;
-    } 
-    else 
-    {
+    } else {
       // set > last dow to 0 && set < curr dow to 0
-      if (currDoW > 0) 
-      {
+      if (currDoW > 0) {
         for (uint32_t i = currDoW; 0 < i; i--) {
           this->_stepsCache[i - 1] = 0;
         }
@@ -48,22 +46,27 @@ void OswHal::setupSteps() {
         this->_stepsCache[i] = 0;
       }
     }
-#ifdef DEBUG
+#ifndef NDEBUG
     Serial.println(String(__FILE__) + ": Updated steps from DoW " + String(lastDoW) + " to DoW " + String(currDoW));
 #endif
     lastDoW = currDoW;
     // write step cache + stepsum
-    prefs.putBytes(PREFS_STEPS_STATS, &this->_stepsCache, sizeof(this->_stepsCache));
-    prefs.putUInt(PREFS_STEPS_ALL, this->_stepsSum);
-    prefs.putUInt(PREFS_STEPS_DAYLASTCHECKED, lastDoW);
+    res = prefs.putBytes(PREFS_STEPS_STATS, &this->_stepsCache, sizeof(this->_stepsCache)) == sizeof(this->_stepsCache);
+    assert(res);
+    res = prefs.putUInt(PREFS_STEPS_ALL, this->_stepsSum) == sizeof(this->_stepsSum);
+    assert(res);
+    res = prefs.putUInt(PREFS_STEPS_DAYLASTCHECKED, lastDoW) == sizeof(lastDoW);
+    assert(res);
   }
   prefs.end();
-#ifdef DEBUG
-  Serial.print(String(__FILE__) + ": Current step history (day " + String(currDoW) + ", sum " +
-               String(this->_stepsSum) + ") is: {");
+#ifndef NDEBUG
+  Serial.print(String(__FILE__) + ": Current step history (day " + String(currDoW) + ", today " +
+               String(this->getAccelStepCount()) + ", sum " + String(this->_stepsSum) + ") is: {");
   for (size_t i = 0; i < 7; i++) {
     if (i > 0) Serial.print(", ");
+    if (i == currDoW) Serial.print("[");
     Serial.print(this->_stepsCache[i]);
+    if (i == currDoW) Serial.print("]");
   }
   Serial.println("}");
 #endif

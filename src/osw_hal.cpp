@@ -28,6 +28,7 @@ void OswHal::setup(bool fromLightSleep) {
 #if defined(GPS_EDITION) || defined(GPS_EDITION_ROTATED)
     this->setupEnvironmentSensor();
 #endif
+    this->updateAccelerometer(); // Update internal cache to refresh / initialize the value obtained by calling this->getAccelStepCount() - needed for e.g. the step statistics!
     this->setupSteps();
     // The magnetometer is currently not setup/stopped by the hal. This should change.
 
@@ -47,7 +48,7 @@ void OswHal::stop(bool toLightSleep) {
     this->displayOff(); // This disables the display
     OswServiceManager::getInstance().stop();
 
-#ifdef DEBUG
+#ifndef NDEBUG
     Serial.println(toLightSleep ? "-> light sleep " : "-> deep sleep ");
 #endif
     delay(100); // Make sure the Serial is flushed and any tasks are finished...
