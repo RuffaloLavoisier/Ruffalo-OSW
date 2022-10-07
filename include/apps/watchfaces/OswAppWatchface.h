@@ -25,6 +25,8 @@ class OswAppWatchface : public OswApp {
   private:
     OswUI* ui;
     void drawWatch();
+    void checkIndicator(OswUI* ui); // check indicator automatic disapper
+    long displayIndicator = 0;
 #ifdef ANIMATION
     AnimMatrix* matrix;
 #endif

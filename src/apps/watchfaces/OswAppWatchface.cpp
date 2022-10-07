@@ -132,6 +132,10 @@ void OswAppWatchface::setup() {
 #endif
 }
 
+
+void OswAppWatchface::checkIndicator(OswUI* ui){
+    OswHal::getInstance()->gfx()->fillCircle(5,5,10,ui->getInfoColor());
+}
 /**
  * @brief Implements the default behavior - the same on all watchfaces!
  *
@@ -145,6 +149,10 @@ void OswAppWatchface::handleButtonDefaults() {
         OswConfig::getInstance()->enableWrite();
         OswConfigAllKeys::settingDisplayDefaultWatchface.set(String(main_watchFaceIndex));
         OswConfig::getInstance()->disableWrite();
+        displayIndicator = millis();
+    }
+    if (millis() - displayIndicator < 1000){
+        checkIndicator(ui);
     }
 }
 
