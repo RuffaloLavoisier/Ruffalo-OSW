@@ -109,7 +109,7 @@ jobs:
       - name: Create release and upload firmware to it
         uses: softprops/action-gh-release@v2
         with:
-          files: "firmwares*/*.bin"
+          files: "*.bin"
           draft: true
           prerelease: true
           generate_release_notes: true
