@@ -84,10 +84,12 @@ jobs:
         run: mv include/config.h.example include/config.h
       - name: Compile language ${{ matrix.language }} model ${{ matrix.model }}
         run: python3 .github/buildFirmware.py -l "${{ matrix.language }}" -m "${{ matrix.model }}" -b "${{ matrix.build-configuration }}"
+      - name: Display structure of artifacts files
+        run: ls -R
       - name: Upload firmware artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: firmwares
+          name: firmwares-${{ matrix.language }}-${{ matrix.model }}-${{ matrix.build-configuration }}
           path: "*.bin"
 
   # do this last step seperately to avoid race conditions with firmware upload
@@ -96,14 +98,18 @@ jobs:
     needs: build-OSW
     if: startsWith(github.ref, 'refs/tags/v')
     steps:
+      - name: Display structure of artifacts files
+        run: ls -R
       - uses: actions/download-artifact@v4
         with:
           pattern: "*.bin"
           merge-multiple: true
+      - name: Display structure of artifacts files
+        run: ls -R
       - name: Create release and upload firmware to it
         uses: softprops/action-gh-release@v2
         with:
-          files: "firmwares/*.bin"
+          files: "firmwares*/*.bin"
           draft: true
           prerelease: true
           generate_release_notes: true
